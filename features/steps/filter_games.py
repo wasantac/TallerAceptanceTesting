@@ -55,3 +55,29 @@ def step_impl(context, message):
 	print(message)
 	print(context.message)
 	assert context.message == message
+
+@given("the user selects the ratings: {ratinglist}")
+def step_impl(context,ratinglist):
+	print(ratinglist)
+	print(context)
+	context.ratinglist = ratinglist
+
+@when("the user searchs by {criteria}")
+def step_impl(context,criteria):
+	if(criteria == "ratings"):
+		result,message,error = get_game_rating(context.games,context.ratinglist)
+		context.result = result
+		context.message = message
+
+@then("the name of all games that correspond to this ratings are")
+def step_impl(context):
+	expected_games = True
+	result_games = []
+	for row in context.table:
+		result_games.append(row['NAME'])
+	for game in context.result:
+		if game.name not in result_games:
+			print("No game " + game.name)
+			expected_games = False
+	assert expected_games is True
+
