@@ -56,20 +56,8 @@ def step_impl(context, message):
 	print(context.message)
 	assert context.message == message
 
-@given("the user selects the ratings: {ratinglist}")
-def step_impl(context,ratinglist):
-	print(ratinglist)
-	print(context)
-	context.ratinglist = ratinglist
-
-@when("the user searchs by {criteria}")
-def step_impl(context,criteria):
-	if(criteria == "ratings"):
-		result,message,error = get_game_rating(context.games,context.ratinglist)
-		context.result = result
-		context.message = message
-
-@then("the name of all games that correspond to this ratings are")
+################ Ratings ##################
+@then("the name of all the games that correspond to these categories will be displayed")
 def step_impl(context):
 	expected_games = True
 	result_games = []
@@ -80,4 +68,52 @@ def step_impl(context):
 			print("No game " + game.name)
 			expected_games = False
 	assert expected_games is True
+
+@given('the user selects one or more ratings: {ratingList}')
+def step_impl(context, ratingList):
+		context.ratingList = ratingList
+		print(ratingList)
+		print(context)
+
+@when("choosing the search by {criteria}")
+def step_impl(context, criteria):
+	if (criteria == 'ratings'):
+		result, message, error = get_game_rating(context.games, context.ratingList)
+		context.result = result
+		context.message = message
+
+
+@then("the following message will be displayed: {message}")
+def step_impl(context, message):
+	print(message)
+	print(context.message)
+	assert context.message == message
+
+################## Manufacturer ######################3
+
+@then("the name of all the games that have been developed by said study will be displayed.")
+def step_impl(context):
+	expected_games = True
+	result_games = []
+	for row in context.table:
+		result_games.append(row['NAME'])
+	for game in context.result:
+		if game.name not in result_games:
+			print("No game " + game.name)
+			expected_games = False
+	assert expected_games is True
+
+@given('the user enters a study: {study}')
+def step_impl(context, study):
+		context.study = study
+		print(study)
+		print(context)
+
+@when("they select the search by {criteria}")
+def step_impl(context, criteria):
+	if (criteria == 'study'):
+		result, message = get_game_developer(context.games, context.study)
+		context.result = result
+		context.message = message
+
 
