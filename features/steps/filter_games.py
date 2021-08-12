@@ -116,4 +116,27 @@ def step_impl(context, criteria):
 		context.result = result
 		context.message = message
 
+########################## Test 2 ##########################
 
+@given("the user enters a manufacturer: {manufacturer}")
+def step_impl(context, manufacturer):
+    context.manufacturer = manufacturer
+    print(manufacturer)
+    print(context)
+
+@when("he selects the search by {criteria} option")
+def step_impl(context, criteria):
+    if criteria=="study":
+        result, message = get_game_developer(context.games, context.manufacturer)
+        context.result = result
+        context.message = message
+
+@then("{total} games will match")
+def step_impl(context, total):
+	assert len(context.result) == int(total)
+
+@then("the following message is displayed: {message}")
+def step_impl(context, message):
+    print(message)
+    print(context.message)
+    assert context.message==message
